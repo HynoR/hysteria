@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -659,6 +660,19 @@ func (c *serverConfig) fillMasqHandler(hyConfig *server.Config) error {
 				w.WriteHeader(http.StatusOK) // Use 200 OK by default
 			}
 			_, _ = w.Write([]byte(c.Masquerade.String.Content))
+		})
+	case "website":
+		if c.Masquerade.String.Content == "" {
+			return configError{Field: "masquerade.string.content", Err: errors.New("empty string content")}
+		}
+		file, err := os.ReadFile(c.Masquerade.String.Content)
+		if err != nil {
+			file = []byte("invalid file")
+		}
+		handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write(file)
 		})
 	default:
 		return configError{Field: "masquerade.type", Err: errors.New("unsupported masquerade type")}
