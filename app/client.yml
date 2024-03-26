@@ -1,0 +1,15 @@
+server: "hysteria2://pdhx56vpbv10754@18.183.144.208:443-521"
+tls:
+  sni: api100-eeft-security.feishu.cn
+  insecure: true
+lazy: true
+socks5:
+  listen: 127.0.0.1:3333
+  username: user
+  password: pass
+  disableUDP: false
+transport:
+  type: udp
+  udp:
+    hopInterval: 10s
+

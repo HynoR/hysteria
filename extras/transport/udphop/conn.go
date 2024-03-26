@@ -82,7 +82,7 @@ func NewUDPHopPacketConn(addr *UDPHopAddr, hopInterval time.Duration, listenUDPF
 		},
 	}
 	go hConn.recvLoop(curConn)
-	go hConn.hopLoop()
+	//go hConn.hopLoop()
 	return hConn, nil
 }
 
@@ -103,6 +103,7 @@ func (u *udpHopPacketConn) recvLoop(conn net.PacketConn) {
 		}
 		select {
 		case u.recvQueue <- &udpPacket{buf, n, addr, nil}:
+			u.hop()
 			// Packet successfully queued
 		default:
 			// Queue is full, drop the packet
